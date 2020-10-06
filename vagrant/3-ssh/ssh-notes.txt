@@ -1,0 +1,16 @@
+#para se conectar usando uma chave especifica
+
+ssh -i caminho/chave user@ip
+
+#criar chave ssh
+
+ssh-keygen -t rsa
+
+#copiar a chave para a maquina virtual
+#acessar com vagrant ssh
+ls /vagrant/    -> vai mostrar o diretório onde está o vagrantfile da maquina
+cp /vagrant/chave.pub .   -> copia a chave criada para a home da maquina
+cat chave.pub >> .ssh/authorized_keys -> adiciona a chave nos hosts permitidos
+
+#para acessar a maquina usando a chave criada 
+ssh -i chave user@ip

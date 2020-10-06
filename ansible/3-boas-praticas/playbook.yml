@@ -1,0 +1,27 @@
+---
+- hosts: all
+  tasks:
+    - name: 'Instala pacotes de dependencia do sistema operacional'
+      apt:
+        name: [
+          'php5', 
+          'apache2', 
+          'libapache2-mod-php5', #integração php-apache 
+          'php5-gd', 
+          'libssh2-php',
+          'php5-mcrypt',
+          'mysql-server-5.6',
+          'python-mysqldb', #necessario pelo ansible, para executar modulos de db
+          'php5-mysql']
+        state: latest
+      become: yes
+      #DEPRECATED (mas funciona)
+      #apt:
+      #  name: "{{ item }}"
+      #  state: latest
+      #become: yes
+      #permite fazer um loop
+      #with_items:
+      #  - php5
+      #  - apache2
+      #  - libapache2-mod-php5

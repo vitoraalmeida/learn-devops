@@ -1,0 +1,28 @@
+---
+- hosts: all
+  tasks:
+    # define um nome para a task
+    - name: 'Instala php5 na ultima versão disponivel'
+    #modulo shell
+    #- shell: 'echo hello > /vagrant/world.txt'
+    #modulo para gerenciar pacotes distros baseadas em debian: apt
+    #yum para centos, rhel
+      apt:
+        name: php5
+        #instala a versão mais nova do pacote disponivel. só tenta alterar
+        #o estado da maquina se a task não tiver sido concluída anteriormente
+        state: latest
+      #se torna root para executar a task
+      become: yes
+    #o apache 2 já vai ser instalado quando o php 5 for instalado
+    - name: 'Instala o apache 2'
+      apt:
+        name: apache2
+        state: latest
+      become: yes
+    #integração php com apache
+    - name: 'Instala o modphp'
+      apt:
+        name: libapache2-mod-php5
+        state: latest
+      become: yes

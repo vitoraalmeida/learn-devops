@@ -1,0 +1,16 @@
+#acessar a maquina e copiar o arquivo de configuração do
+#mysql para a pasta de configuraçoes do projeto.
+
+cat /etc/mysql/mysql.conf.d/mysqld.cnf >> /configs/mysqld.cnf
+
+#alterar a configuração bind address para permitir acesso
+#de qualquer ip (NÃO FAZER EM PRODUÇÃO)
+
+bind-address		= 0.0.0.0
+
+#isso vai automatizar o processo de alterar a configuração 
+#padrão do mysql
+
+
+
+

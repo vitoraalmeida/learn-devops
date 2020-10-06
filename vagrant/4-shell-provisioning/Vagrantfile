@@ -1,0 +1,38 @@
+$script_mysql = <<-SCRIPT
+  apt-get update && \
+  apt-get install -y mysql-server-5.7 && \
+  mysql -e "create user 'phpuser'@'%' identified by 'pass';"
+SCRIPT
+
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "forwarded_port", guest: 80, host: 8088
+  
+  #define rede privada (só o host pode acessar) com ip estático
+  #config.vm.network "private_network", ip: "192.168.50.4"
+
+  #dhcp serve para determinar ips para maquinas automaticamente
+  #config.vm.network "private_network", type: "dhcp"
+  
+  #rede publica (bridge). Se o ip não for definido, o será pelo dhcp do host
+  config.vm.network "public_network", ip: "192.168.15.24"
+ 
+  #desabilita a sincronização da pasta onde está o Vagrantfile, que é feita
+  #automaticamente
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  
+  #cria uma pasta configs no guest e sincroniza com a pasta ./configs do host
+  config.vm.synced_folder "./configs", "/configs"
+
+  #define o provisionamento pelo shell do guest
+  config.vm.provision "shell",
+    inline: "cat /configs/id_bionic.pub >> .ssh/authorized_keys"
+
+  config.vm.provision "shell", inline: $script_mysql
+  config.vm.provision "shell",
+    inline: "cat /configs/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
+  config.vm.provision "shell", 
+    inline: "service mysql restart"
+
+end

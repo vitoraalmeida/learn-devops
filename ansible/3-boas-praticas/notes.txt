@@ -1,0 +1,12 @@
+    #verboso grupo      usuario
+ansible -vvv wordpress -u vagrant \
+    #informa chave para conectar por ssh
+--private-key .vagrant/machines/wordpress/virtualbox/private_key \
+#inventario  modo  argumentos
+-i hosts -m shell -a 'echo hello, world'
+
+## usando playbook
+
+ansible-playbook playbook.yml -u vagrant -i hosts \
+--private-key .vagrant/machines/wordpress/virtualbox/private_key \
+

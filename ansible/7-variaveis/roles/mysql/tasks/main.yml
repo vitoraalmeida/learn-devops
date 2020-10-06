@@ -1,0 +1,35 @@
+---
+- name: 'Instala pacotes de dependencia do sistema operacional'
+  apt:
+    name: [
+      'mysql-server-5.6',
+      'python-mysqldb',] #necessario pelo ansible, para executar modulos de db
+    state: latest
+  become: yes
+
+- name: 'Cria o banco de dados'
+  #nome do modulo. outros bd's possuem modulos diferentes
+  mysql_db: 
+    name: "{{ wp_db_name }}"
+    login_user: root
+    #login_password:
+    state: present #cria o banco; absent:destroy; dump; import sql
+
+- name: 'Cria usuário no mysql'
+  mysql_user:
+    login_user: root
+    name: "{{ wp_username }}"
+    password: "{{ wp_user_password }}"
+    priv: "{{ wp_db_name }}.*:ALL"
+    state: present
+    host: "{{ item }}"
+  with_items:
+      - "{{ wp_db_ip }}"
+
+- name: 'Configura mysql para servir o wordpress'
+  copy:
+    src: 'files/my.cnf'
+    dest: '/etc/mysql/my.cnf'
+  become: yes
+  notify: 
+    - restart mysql 
